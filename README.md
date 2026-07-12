@@ -205,7 +205,7 @@ DNSDomains = [
 ## 🔧 Building from Source
 
 ### Requirements
-- **Rust 1.70+** - Latest stable Rust toolchain
+- **Rust 1.87+ (recent stable)** - Latest stable Rust toolchain
 - **Unix-like system** - Linux, macOS, or BSD
 - **Development tools** - git, cargo
 
@@ -276,8 +276,8 @@ netwatch --list
 netwatch's passive monitoring is read-only (`/proc`, `/sys`, system APIs) and
 transmits nothing. The optional **Diagnostics** panel is the one exception:
 while open, it actively probes configurable targets (defaults: 1.1.1.1,
-8.8.8.8, cloudflare.com, google.com) every 5 seconds using
-`ping`/`traceroute`/`nc`/`nslookup`. Close the panel and no probes run. The
+8.8.8.8, cloudflare.com, google.com) every 5 seconds using ping, DNS
+resolution, and TCP connectivity checks. Close the panel and no probes run. The
 targets can be changed in the config file (`DiagnosticTargets` / `DNSDomains`).
 
 ## 🤝 Contributing
@@ -337,8 +337,7 @@ make watch        # Watch for changes
 ```
 
 ### Package Information
-- **Crate name**: `netwatch-rs`
-- **Binary name**: `netwatch` (command users run)
+- **Crate/binary name**: `netwatch`
 - **Repository**: `abcsds/netwatch` (GitHub)
 
 ## 📄 License

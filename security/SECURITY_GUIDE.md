@@ -63,8 +63,7 @@ netwatch --log-file /var/log/netwatch.log
 ## Vulnerability Response
 
 ### Reporting Security Issues
-- **Email**: security@netwatch.project (if available)
-- **GitHub**: Use private security advisories
+- **GitHub**: Use [Private Vulnerability Reporting](https://github.com/abcsds/netwatch/security/advisories/new)
 - **Response Time**: Within 48 hours
 
 ### Security Updates
@@ -76,7 +75,7 @@ netwatch --log-file /var/log/netwatch.log
 ## Security Monitoring
 
 ### Automated Checks
-- Daily security audits via GitHub Actions
+- Weekly security audits via GitHub Actions
 - Dependency vulnerability scanning
 - License compliance checking
 - SBOM generation and validation

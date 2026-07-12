@@ -24,7 +24,7 @@ nix run github:abcsds/netwatch
 - **Other Unix** - Should work on most Unix-like systems
 
 ### Dependencies
-- **Rust 1.70+** - Latest stable Rust toolchain
+- **Rust 1.87+ (recent stable)** - Latest stable Rust toolchain
 - **Development tools** - git, cargo (included with Rust)
 
 ## Installation Methods

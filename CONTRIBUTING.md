@@ -24,7 +24,7 @@ Thank you for your interest in contributing to netwatch! This document provides 
 
 ### Prerequisites
 
-- Rust 1.70 or later
+- Rust 1.87+ (recent stable)
 - Git
 - A Unix-like system (Linux, macOS, or BSD)
 
