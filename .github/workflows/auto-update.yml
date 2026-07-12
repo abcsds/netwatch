@@ -1,0 +1,100 @@
+name: Auto Update
+
+on:
+  schedule:
+    # Monthly: 1st of the month, 04:00 UTC
+    - cron: '0 4 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+
+jobs:
+  update:
+    name: Update dependencies and release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Keep workflow enabled
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # GitHub auto-disables scheduled workflows in public repos after 60
+        # days without repo activity, and no-change months produce no
+        # commits. Re-enabling on every run resets that timer.
+        gh api -X PUT "repos/${{ github.repository }}/actions/workflows/auto-update.yml/enable"
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+
+    - name: Update lockfiles
+      run: |
+        cargo update
+        nix flake update
+
+    - name: Detect changes
+      id: changes
+      run: |
+        if git diff --quiet Cargo.lock flake.lock; then
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Build and test
+      id: test
+      if: steps.changes.outputs.changed == 'true'
+      continue-on-error: true
+      run: |
+        cargo build --verbose
+        cargo test --verbose
+        cargo clippy --all-targets --all-features -- -D warnings
+        nix build -L
+
+    - name: Install cargo-edit
+      if: steps.changes.outputs.changed == 'true' && steps.test.outcome == 'success'
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-edit
+
+    - name: Bump version, commit and tag
+      id: bump
+      if: steps.changes.outputs.changed == 'true' && steps.test.outcome == 'success'
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        cargo set-version --bump patch
+        cargo update --workspace  # sync new version into Cargo.lock
+        version=$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[0].version')
+        git add Cargo.toml Cargo.lock flake.lock
+        git commit -m "chore: monthly dependency update (v${version})"
+        git tag "v${version}"
+        git push origin HEAD:main "v${version}"
+        echo "version=v${version}" >> "$GITHUB_OUTPUT"
+
+    - name: Dispatch release workflow
+      if: steps.bump.outcome == 'success' && steps.changes.outputs.changed == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Tags pushed with GITHUB_TOKEN don't trigger `on: push: tags`
+        # workflows, so dispatch the release explicitly.
+        gh workflow run release.yml -f tag="${{ steps.bump.outputs.version }}"
+
+    - name: Open issue on failure
+      if: steps.changes.outputs.changed == 'true' && steps.test.outcome == 'failure'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh issue create \
+          --title "Monthly auto-update failed" \
+          --body "Dependency updates broke the build, tests, clippy, or the nix build. See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}. No release was made."
