@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.3.0] - 2026-07-12
+
+First release of the maintained fork (github.com/abcsds/netwatch).
+Versions 0.1.3–0.2.0 were unreleased upstream/internal iterations.
+
+### Added
+- Nix flake: `nix run github:abcsds/netwatch`, dev shell, and flake checks
+- Monthly auto-update workflow that refreshes dependencies and cuts a release when green
+- README privacy note documenting the Diagnostics panel's active probes
+
+### Changed
+- Package renamed from `netwatch-rs` back to `netwatch` (no crates.io publishing; `publish = false`)
+- Repository metadata now points at the abcsds/netwatch fork
+- Release workflow no longer publishes to crates.io; Docker/Homebrew jobs are opt-in via repository variables
+- `Cargo.lock` is now committed for reproducible builds
+- Scheduled security audit runs weekly instead of daily
+
+### Fixed
+- Removed leftover debug logging to predictable /tmp paths
+- `--list` integration test no longer assumes machine-specific interface names
+- Removed cargo-husky/.githooks double hook installation
+
+### Removed
+- Stale upstream artifacts: `security/sbom.json` (embedded upstream-private data), `CODE_QUALITY_REPORT.md`, `ROADMAP.md`, `.github/FUNDING.yml`
+
 ## [0.1.2] - 2025-07-27
 
 ### Fixed

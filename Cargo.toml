@@ -1,6 +1,6 @@
 [package]
 name = "netwatch"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Netwatch Contributors"]
 description = "A modern network traffic monitor for Unix systems, inspired by nload but written in Rust"
