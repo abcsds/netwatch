@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         rust: [stable]
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -77,19 +77,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Install cargo-audit
       run: cargo install cargo-audit
-      
+
     - name: Run security audit
       run: cargo audit
 
     - name: Install cargo-deny
       run: cargo install cargo-deny
-      
+
     - name: Check dependencies
       run: cargo deny check
 
@@ -99,27 +99,27 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y lsof net-tools procps
-      
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
         components: llvm-tools-preview
-        
+
     - name: Install cargo-llvm-cov
       uses: taiki-e/install-action@cargo-llvm-cov
-      
+
     - name: Generate code coverage
       run: |
         # Run coverage generation, but don't fail if some tests can't run in CI
         cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info || echo "Some coverage tests failed in CI environment"
         # Ensure we have a coverage file even if empty
         touch lcov.info
-      
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
@@ -136,19 +136,19 @@ jobs:
         target:
           - x86_64-unknown-linux-gnu
           - x86_64-unknown-linux-musl
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
         targets: ${{ matrix.target }}
-        
+
     - name: Install cross
       run: cargo install cross
-      
+
     - name: Build for target
       run: cross build --target ${{ matrix.target }} --release
 
@@ -158,13 +158,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Run benchmarks
       run: cargo bench
-      
+
     - name: Performance regression check
       run: |
         # Store benchmark results for comparison
@@ -179,19 +179,19 @@ jobs:
       docker:
         image: docker:20.10.7
         options: --privileged
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Install network tools
       run: |
         sudo apt-get update
         sudo apt-get install -y iproute2 net-tools iperf3 tcpdump
-        
+
     - name: Create virtual network interfaces for testing
       run: |
         # Create dummy interfaces for testing
@@ -199,18 +199,18 @@ jobs:
         sudo ip link add test1 type dummy
         sudo ip link set test0 up
         sudo ip link set test1 up
-        
+
     - name: Test interface detection
       run: |
         # Test that our tool can detect the dummy interfaces
         cargo run -- --list | grep -E "(test0|test1)" || echo "Virtual interfaces may not be listed"
-        
+
     - name: Test with different interface configurations
       run: |
         # Test various network configurations
         cargo build --release
         timeout 5s ./target/release/netwatch lo || echo "Expected timeout"
-        
+
     - name: Memory leak testing
       run: |
         # Install valgrind for memory testing
@@ -224,18 +224,34 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Build documentation
       run: cargo doc --all-features --no-deps
-      
+
     - name: Check documentation links
       run: cargo doc --all-features --no-deps
-      
+
     - name: Deploy documentation (main branch only)
       if: github.ref == 'refs/heads/main'
       run: |
         echo "Documentation would be deployed to GitHub Pages"
         # Actual deployment would upload target/doc to GitHub Pages
+
+  nix:
+    name: Nix Flake Check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+
+    - name: Flake check
+      run: nix flake check -L
+
+    - name: Build package
+      run: nix build -L
