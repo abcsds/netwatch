@@ -1,5 +1,9 @@
 # Performance Benchmarks
 
+> **Provenance:** these numbers were measured by the upstream project
+> (vietcgi/netwatch v0.1.0, macOS 14.x) and have not been re-measured in
+> this fork. Treat them as indicative only.
+
 This document contains performance benchmarks for netwatch to help users understand its resource usage and performance characteristics.
 
 ## Benchmark Environment

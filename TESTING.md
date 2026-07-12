@@ -67,7 +67,7 @@ cargo build
   - Linux x86_64 (musl, static)
   - macOS x86_64 (Intel)
   - macOS ARM64 (Apple Silicon)
-- **Automated releases** to GitHub, crates.io
+- **Automated releases** to GitHub
 - **Homebrew formula updates**
 - **Docker image builds** (multi-arch)
 

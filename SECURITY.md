@@ -6,7 +6,8 @@ We provide security updates for the following versions of netwatch:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+| 0.3.x   | :white_check_mark: |
+| < 0.3   | :x:                |
 
 ## Reporting a Vulnerability
 
@@ -16,7 +17,9 @@ We take security seriously. If you discover a security vulnerability in netwatch
 
 **DO NOT** open a public GitHub issue for security vulnerabilities.
 
-Instead, please send an email to the maintainers with:
+Instead, please report it privately via
+[GitHub Private Vulnerability Reporting](https://github.com/abcsds/netwatch/security/advisories/new),
+including:
 
 - A description of the vulnerability
 - Steps to reproduce the issue
@@ -147,7 +150,7 @@ Current security scanning includes:
 
 For security-related questions or concerns:
 - Open a public issue for general security questions
-- Email maintainers for vulnerability reports
+- Use GitHub Private Vulnerability Reporting for vulnerability reports
 - Review this document for security guidelines
 
 ---
