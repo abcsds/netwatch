@@ -561,7 +561,7 @@ impl NetworkIntelligenceEngine {
         let external_connections = self
             .connection_history
             .iter()
-            .filter(|conn| !conn.geo_info.as_ref().map_or(true, |geo| geo.is_internal))
+            .filter(|conn| !conn.geo_info.as_ref().is_none_or(|geo| geo.is_internal))
             .count();
 
         let suspicious_connections = self

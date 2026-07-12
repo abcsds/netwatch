@@ -402,7 +402,7 @@ impl ProcessMonitor {
             .filter(|p| p.listening_ports > 0)
             .collect();
 
-        processes.sort_by(|a, b| b.listening_ports.cmp(&a.listening_ports));
+        processes.sort_by_key(|b| std::cmp::Reverse(b.listening_ports));
         processes
     }
 

@@ -457,13 +457,11 @@ pub fn run_dashboard(
                                 state.next_item(state.devices.len());
                                 needs_redraw = true;
                             }
-                            DashboardPanel::Graphs => {
-                                // Switch to next device in graphs panel
-                                if !state.devices.is_empty() {
-                                    state.current_device_index =
-                                        (state.current_device_index + 1) % state.devices.len();
-                                    needs_redraw = true;
-                                }
+                            // Switch to next device in graphs panel
+                            DashboardPanel::Graphs if !state.devices.is_empty() => {
+                                state.current_device_index =
+                                    (state.current_device_index + 1) % state.devices.len();
+                                needs_redraw = true;
                             }
                             _ => {}
                         }
@@ -474,17 +472,14 @@ pub fn run_dashboard(
                                 state.prev_item(state.devices.len());
                                 needs_redraw = true;
                             }
-                            DashboardPanel::Graphs => {
-                                // Switch to previous device in graphs panel
-                                if !state.devices.is_empty() {
-                                    state.current_device_index = if state.current_device_index == 0
-                                    {
-                                        state.devices.len() - 1
-                                    } else {
-                                        state.current_device_index - 1
-                                    };
-                                    needs_redraw = true;
-                                }
+                            // Switch to previous device in graphs panel
+                            DashboardPanel::Graphs if !state.devices.is_empty() => {
+                                state.current_device_index = if state.current_device_index == 0 {
+                                    state.devices.len() - 1
+                                } else {
+                                    state.current_device_index - 1
+                                };
+                                needs_redraw = true;
                             }
                             _ => {}
                         }
@@ -639,7 +634,7 @@ pub fn run_dashboard(
             if (matches!(state.active_panel, DashboardPanel::Diagnostics)
                 && (state
                     .last_active_diagnostics_update
-                    .map_or(true, |last| last.elapsed() >= diagnostics_update_interval)
+                    .is_none_or(|last| last.elapsed() >= diagnostics_update_interval)
                     || force_diagnostics_update))
             {
                 if let Err(_e) = state.active_diagnostics.update() {
@@ -4884,7 +4879,7 @@ fn draw_top_interfaces(
         })
         .collect();
 
-    interface_traffic.sort_by(|a, b| b.1.cmp(&a.1));
+    interface_traffic.sort_by_key(|b| std::cmp::Reverse(b.1));
     interface_traffic.truncate(3); // Top 3
 
     let mut top_text = vec![

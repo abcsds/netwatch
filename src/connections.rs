@@ -664,7 +664,7 @@ impl ConnectionMonitor {
         }
 
         let mut sorted_processes: Vec<(String, u32)> = process_counts.into_iter().collect();
-        sorted_processes.sort_by(|a, b| b.1.cmp(&a.1));
+        sorted_processes.sort_by_key(|b| std::cmp::Reverse(b.1));
         sorted_processes.truncate(10); // Top 10
 
         sorted_processes
@@ -680,7 +680,7 @@ impl ConnectionMonitor {
         }
 
         let mut sorted_hosts: Vec<(IpAddr, u32)> = host_counts.into_iter().collect();
-        sorted_hosts.sort_by(|a, b| b.1.cmp(&a.1));
+        sorted_hosts.sort_by_key(|b| std::cmp::Reverse(b.1));
         sorted_hosts.truncate(10); // Top 10
 
         sorted_hosts
