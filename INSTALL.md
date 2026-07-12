@@ -56,9 +56,6 @@ sudo cp target/release/netwatch /usr/local/bin/
 
 Coming soon:
 ```bash
-# Homebrew (macOS/Linux)
-brew install netwatch
-
 # Arch Linux AUR
 yay -S netwatch
 

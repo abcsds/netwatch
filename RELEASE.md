@@ -74,11 +74,6 @@ chmod +x /usr/local/bin/netwatch
 nix run github:abcsds/netwatch
 ```
 
-#### Homebrew (macOS)
-```bash
-brew install netwatch
-```
-
 ### 4. Build from Source
 ```bash
 git clone https://github.com/abcsds/netwatch.git
