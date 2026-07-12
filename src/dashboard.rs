@@ -28,8 +28,6 @@ use ratatui::{
     },
     Frame, Terminal,
 };
-use std::fs::OpenOptions;
-use std::io::Write;
 use std::net::IpAddr;
 use std::{
     collections::HashMap,
@@ -249,14 +247,6 @@ impl DashboardState {
 
         // More robust navigation logic
         if panels.is_empty() {
-            let empty_msg = "ERROR: panels.is_empty() in next_panel\n";
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("/tmp/netwatch_nav_debug.log")
-            {
-                let _ = file.write_all(empty_msg.as_bytes());
-            }
             return false; // Safety check for empty panels
         }
 
@@ -286,30 +276,8 @@ impl DashboardState {
             // Flag for immediate redraw bypass throttling
             self.navigation_redraw_needed = true;
 
-            // Simple navigation logging
-            let nav_msg = format!("Next: {} -> {}\n", current_index, self.panel_index);
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("/tmp/netwatch_nav_debug.log")
-            {
-                let _ = file.write_all(nav_msg.as_bytes());
-            }
-
             true // Return true to indicate successful navigation
         } else {
-            let invalid_msg = format!(
-                "ERROR: Invalid next_index {} >= {}\n",
-                next_index,
-                panels.len()
-            );
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("/tmp/netwatch_nav_debug.log")
-            {
-                let _ = file.write_all(invalid_msg.as_bytes());
-            }
             false // Return false for invalid navigation
         }
     }
@@ -349,16 +317,6 @@ impl DashboardState {
 
             // Flag for immediate redraw bypass throttling
             self.navigation_redraw_needed = true;
-
-            // Simple navigation logging
-            let nav_msg = format!("Prev: {} -> {}\n", current_index, self.panel_index);
-            if let Ok(mut file) = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("/tmp/netwatch_nav_debug.log")
-            {
-                let _ = file.write_all(nav_msg.as_bytes());
-            }
 
             return true; // Return true to indicate successful navigation
         }
@@ -473,19 +431,6 @@ pub fn run_dashboard(
         if event::poll(Duration::from_millis(poll_interval))? {
             if let Event::Key(key) = event::read()? {
                 let input_event = InputEvent::from_key_event(key);
-
-                // Log all key events for debugging
-                let debug_msg = format!(
-                    "Key: {:?}, Modifiers: {:?}, Event: {:?}\n",
-                    key.code, key.modifiers, input_event
-                );
-                if let Ok(mut file) = OpenOptions::new()
-                    .create(true)
-                    .append(true)
-                    .open("/tmp/netwatch_debug.log")
-                {
-                    let _ = file.write_all(debug_msg.as_bytes());
-                }
 
                 match input_event {
                     InputEvent::Quit => break,
@@ -793,13 +738,6 @@ fn draw_dashboard(
     } else {
         None
     };
-
-    // Debug logging for panel rendering (temporarily disabled for performance)
-    // let render_debug = format!("RENDER: panel_index={}, active_panel={:?}\n",
-    //                           state.panel_index, state.active_panel);
-    // if let Ok(mut file) = OpenOptions::new().create(true).append(true).open("/tmp/netwatch_render_debug.log") {
-    //     let _ = file.write_all(render_debug.as_bytes());
-    // }
 
     // Draw main content based on active panel
     match state.active_panel {
