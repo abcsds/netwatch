@@ -54,18 +54,15 @@ jobs:
           ### Binary Installation
           Download the appropriate binary for your system from the assets below.
           
+          ### Nix
+          ```bash
+          nix run github:abcsds/netwatch
+          ```
+
           ### From Source
           ```bash
-          cargo install netwatch
-          ```
-          
-          ### Package Managers
-          ```bash
-          # macOS
-          brew install netwatch
-          
-          # Linux (Arch)
-          yay -S netwatch
+          git clone https://github.com/abcsds/netwatch && cd netwatch
+          cargo install --path .
           ```
           
           ## Usage
@@ -128,10 +125,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Get version
-      id: get_version
-      run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      with:
+        ref: ${{ needs.create-release.outputs.version }}
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -140,7 +135,7 @@ jobs:
 
     - name: Install cross (for cross-compilation)
       if: contains(matrix.target, 'musl') || contains(matrix.target, 'aarch64')
-      run: cargo install cross --git https://github.com/cross-rs/cross
+      run: cargo install cross --locked
 
     - name: Build release binary
       run: |
@@ -186,24 +181,11 @@ jobs:
         files: |
           target/${{ matrix.target }}/release/${{ matrix.asset_name }}.tar.gz
 
-  publish-crates:
-    name: Publish to crates.io
-    needs: [create-release, build-release]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install Rust toolchain
-      uses: dtolnay/rust-toolchain@stable
-      
-    - name: Publish to crates.io
-      run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
-
   homebrew:
     name: Update Homebrew Formula
     needs: [create-release, build-release]
     runs-on: macos-latest
+    if: vars.ENABLE_HOMEBREW_RELEASE == 'true'
     steps:
     - name: Get version
       id: get_version
@@ -244,16 +226,16 @@ jobs:
         cat > Formula/netwatch.rb << EOF
         class Netwatch < Formula
           desc "Modern network traffic monitor for Unix systems, inspired by nload but written in Rust"
-          homepage "https://github.com/vietcgi/netwatch"
+          homepage "https://github.com/${{ github.repository }}"
           version "${clean_version}"
           license "MIT"
 
           if OS.mac?
             if Hardware::CPU.arm?
-              url "https://github.com/vietcgi/netwatch/releases/download/${version}/netwatch-macos-arm64.tar.gz"
+              url "https://github.com/${{ github.repository }}/releases/download/${version}/netwatch-macos-arm64.tar.gz"
               sha256 "${arm64_sha}"
             else
-              url "https://github.com/vietcgi/netwatch/releases/download/${version}/netwatch-macos-x86_64.tar.gz"
+              url "https://github.com/${{ github.repository }}/releases/download/${version}/netwatch-macos-x86_64.tar.gz"
               sha256 "${x86_64_sha}"
             end
           end
@@ -308,10 +290,13 @@ jobs:
     name: Build and Push Docker Image
     needs: create-release
     runs-on: ubuntu-latest
+    if: vars.ENABLE_DOCKER_RELEASE == 'true'
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+      with:
+        ref: ${{ needs.create-release.outputs.version }}
+
     - name: Get version
       id: get_version
       run: |
