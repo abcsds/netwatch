@@ -1,14 +1,13 @@
 [package]
-name = "netwatch-rs"
+name = "netwatch"
 version = "0.2.0"
 edition = "2021"
-rust-version = "1.70"
 authors = ["Netwatch Contributors"]
 description = "A modern network traffic monitor for Unix systems, inspired by nload but written in Rust"
 license = "MIT"
-repository = "https://github.com/vietcgi/netwatch"
-homepage = "https://github.com/vietcgi/netwatch"
-documentation = "https://docs.rs/netwatch"
+publish = false
+repository = "https://github.com/abcsds/netwatch"
+homepage = "https://github.com/abcsds/netwatch"
 readme = "README.md"
 keywords = ["network", "monitoring", "bandwidth", "traffic", "cli"]
 categories = ["command-line-utilities", "network-programming", "visualization"]
@@ -44,7 +43,6 @@ assert_cmd = "2.0"
 predicates = "3.0"
 tempfile = "3.0"
 criterion = { version = "0.7", features = ["html_reports"] }
-cargo-husky = { version = "1.5", default-features = false, features = ["precommit-hook", "run-cargo-test", "run-cargo-fmt", "run-cargo-clippy"] }
 
 [[bin]]
 name = "netwatch"
