@@ -11,6 +11,11 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+# The repo's default workflow token permission is read-only; uploading
+# release assets needs contents:write.
+permissions:
+  contents: write
+
 jobs:
   build-binaries:
     name: Build Release Binaries
