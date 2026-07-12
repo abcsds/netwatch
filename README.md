@@ -1,10 +1,12 @@
 # netwatch
 
-[![CI](https://github.com/vietcgi/netwatch/workflows/CI/badge.svg)](https://github.com/vietcgi/netwatch/actions)
-[![Security](https://github.com/vietcgi/netwatch/workflows/Security/badge.svg)](https://github.com/vietcgi/netwatch/actions)
+[![CI](https://github.com/abcsds/netwatch/workflows/CI/badge.svg)](https://github.com/abcsds/netwatch/actions)
+[![Security](https://github.com/abcsds/netwatch/workflows/Security/badge.svg)](https://github.com/abcsds/netwatch/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern network traffic monitor for Unix systems, inspired by nload but written in Rust with enhanced features and beautiful terminal interfaces.
+
+> netwatch is a maintained fork of [vietcgi/netwatch](https://github.com/vietcgi/netwatch), itself inspired by the classic [nload](https://github.com/rolandriegel/nload).
 
 ## ✨ Features
 
@@ -34,36 +36,33 @@ A modern network traffic monitor for Unix systems, inspired by nload but written
 #### Automated Installation (Recommended)
 ```bash
 # Install latest version
-curl -sSL https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 
 # Or with wget
-wget -qO- https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 
 # Install to custom directory
-INSTALL_DIR=~/.local/bin curl -sSL https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+INSTALL_DIR=~/.local/bin curl -sSL https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 ```
 
-#### Package Managers
+#### Nix (flake)
 ```bash
-# Rust/Cargo
-cargo install netwatch-rs
+# Run without installing
+nix run github:abcsds/netwatch
 
-# Homebrew (macOS)
-brew install netwatch
-
-# Docker
-docker run --rm -it --net=host ghcr.io/vietcgi/netwatch:latest
+# Dev shell with the full toolchain
+nix develop github:abcsds/netwatch
 ```
 
 #### Manual Download
-Download pre-built binaries from the [Releases page](https://github.com/vietcgi/netwatch/releases) for:
+Download pre-built binaries from the [Releases page](https://github.com/abcsds/netwatch/releases) for:
 - Linux x86_64 (glibc & musl)
 - Linux ARM64 (glibc & musl) 
 - macOS x86_64 & ARM64
 
 #### From Source
 ```bash
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 cargo install --path .
 ```
@@ -213,7 +212,7 @@ DNSDomains = [
 ### Build Process
 ```bash
 # Clone repository
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 
 # Build release version
@@ -279,7 +278,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ### Development Setup
 ```bash
 # Clone the repository
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 
 # Initial setup (installs git hooks, builds project)
@@ -329,9 +328,9 @@ make watch        # Watch for changes
 ```
 
 ### Package Information
-- **Crate name**: `netwatch-rs` (on crates.io)
+- **Crate name**: `netwatch-rs`
 - **Binary name**: `netwatch` (command users run)
-- **Repository**: `vietcgi/netwatch` (GitHub)
+- **Repository**: `abcsds/netwatch` (GitHub)
 
 ## 📄 License
 
@@ -345,9 +344,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/vietcgi/netwatch/issues)
+- **Issues**: [GitHub Issues](https://github.com/abcsds/netwatch/issues)
 - **Security**: See [SECURITY.md](SECURITY.md) for reporting security issues
-- **Discussions**: [GitHub Discussions](https://github.com/vietcgi/netwatch/discussions)
+- **Discussions**: [GitHub Discussions](https://github.com/abcsds/netwatch/discussions)
 
 ---
 

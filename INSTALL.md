@@ -6,14 +6,14 @@ This guide covers different methods to install netwatch on your system.
 
 ### From Source (Recommended)
 ```bash
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 cargo install --path .
 ```
 
-### From crates.io (Future)
+### With Nix
 ```bash
-cargo install netwatch
+nix run github:abcsds/netwatch
 ```
 
 ## System Requirements
@@ -34,10 +34,7 @@ cargo install netwatch
 Install directly from the repository:
 ```bash
 # Install latest from repository
-cargo install --git https://github.com/vietcgi/netwatch
-
-# Install specific version (when available on crates.io)
-cargo install netwatch --version 0.1.0
+cargo install --git https://github.com/abcsds/netwatch
 ```
 
 ### 2. Manual Build
@@ -45,7 +42,7 @@ cargo install netwatch --version 0.1.0
 For development or customization:
 ```bash
 # Clone and build
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 
 # Build release version
@@ -163,7 +160,7 @@ For contributors and developers:
 
 ```bash
 # Clone repository
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 
 # Install development dependencies
@@ -192,7 +189,7 @@ Note: Container must use host networking to access network interfaces.
 ## Support
 
 If you encounter installation issues:
-- Check [GitHub Issues](https://github.com/vietcgi/netwatch/issues)
+- Check [GitHub Issues](https://github.com/abcsds/netwatch/issues)
 - Review [Troubleshooting Guide](TROUBLESHOOTING.md)
 - Create a new issue with your system details
 

@@ -31,7 +31,7 @@ Thank you for your interest in contributing to netwatch! This document provides 
 ### Setup
 
 ```bash
-git clone https://github.com/vietcgi/netwatch
+git clone https://github.com/abcsds/netwatch
 cd netwatch
 cargo build
 cargo test

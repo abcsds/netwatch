@@ -9,7 +9,7 @@ Netwatch uses an automated release process that triggers when a new version tag 
 1. **Cross-platform binary builds** for Linux and macOS
 2. **Security verification** with checksums and signatures
 3. **Multi-arch Docker images** for containerized deployments
-4. **Package manager integration** (crates.io, Homebrew)
+4. **Optional integrations** (Homebrew, Docker — gated on the ENABLE_HOMEBREW_RELEASE / ENABLE_DOCKER_RELEASE repository variables)
 5. **Automated documentation** generation
 
 ## Supported Platforms
@@ -41,27 +41,27 @@ The easiest way to install netwatch:
 
 ```bash
 # Install latest version
-curl -sSL https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 
 # Or with wget
-wget -qO- https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 
 # Install to custom directory
-INSTALL_DIR=~/.local/bin curl -sSL https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash
+INSTALL_DIR=~/.local/bin curl -sSL https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash
 
 # Install specific version
-curl -sSL https://raw.githubusercontent.com/vietcgi/netwatch/main/install.sh | bash -s -- --version v0.1.0
+curl -sSL https://raw.githubusercontent.com/abcsds/netwatch/main/install.sh | bash -s -- --version v0.1.0
 ```
 
 ### 2. Manual Binary Download
 
-1. Visit the [Releases page](https://github.com/vietcgi/netwatch/releases)
+1. Visit the [Releases page](https://github.com/abcsds/netwatch/releases)
 2. Download the appropriate binary for your platform
 3. Extract and install:
 
 ```bash
 # Example for Linux x86_64
-wget https://github.com/vietcgi/netwatch/releases/latest/download/netwatch-linux-x86_64.tar.gz
+wget https://github.com/abcsds/netwatch/releases/latest/download/netwatch-linux-x86_64.tar.gz
 tar -xzf netwatch-linux-x86_64.tar.gz
 sudo mv netwatch /usr/local/bin/
 chmod +x /usr/local/bin/netwatch
@@ -69,9 +69,9 @@ chmod +x /usr/local/bin/netwatch
 
 ### 3. Package Managers
 
-#### Rust/Cargo
+#### Nix
 ```bash
-cargo install netwatch
+nix run github:abcsds/netwatch
 ```
 
 #### Homebrew (macOS)
@@ -79,18 +79,9 @@ cargo install netwatch
 brew install netwatch
 ```
 
-#### Docker
-```bash
-# Run directly
-docker run --rm ghcr.io/vietcgi/netwatch:latest --help
-
-# Interactive monitoring (requires host network access)
-docker run --rm -it --net=host ghcr.io/vietcgi/netwatch:latest eth0
-```
-
 ### 4. Build from Source
 ```bash
-git clone https://github.com/vietcgi/netwatch.git
+git clone https://github.com/abcsds/netwatch.git
 cd netwatch
 cargo build --release
 sudo cp target/release/netwatch /usr/local/bin/
@@ -102,7 +93,7 @@ All release binaries include checksums for integrity verification:
 
 ```bash
 # Download binary and checksums
-wget https://github.com/vietcgi/netwatch/releases/latest/download/netwatch-linux-x86_64.tar.gz
+wget https://github.com/abcsds/netwatch/releases/latest/download/netwatch-linux-x86_64.tar.gz
 tar -xzf netwatch-linux-x86_64.tar.gz
 
 # Verify checksums (included in the tarball)
@@ -139,7 +130,6 @@ The release workflow automatically:
    - Generates SHA256/SHA512 checksums
 
 3. **Publishes to Package Managers**
-   - Publishes to crates.io
    - Updates Homebrew formula
    - Pushes Docker images to registry
 
@@ -186,30 +176,18 @@ Netwatch follows [Semantic Versioning](https://semver.org/):
 ### Multi-Architecture Support
 All Docker images support both `linux/amd64` and `linux/arm64` architectures automatically.
 
-### Usage Examples
-```bash
-# Basic usage
-docker run --rm ghcr.io/vietcgi/netwatch:latest --help
-
-# Monitor network interface (requires host network)
-docker run --rm -it --net=host ghcr.io/vietcgi/netwatch:latest
-
-# Run with custom configuration
-docker run --rm -v /path/to/config:/config ghcr.io/vietcgi/netwatch:latest --config /config/netwatch.toml
-```
-
 ## Package Manager Integration
 
-### Crates.io
-Automatically published on each release. Users can install with:
+### Nix
+No publishing step required — the flake is consumed directly from the repository:
 ```bash
-cargo install netwatch
+nix run github:abcsds/netwatch
 ```
 
 ### Homebrew
 Formula is automatically updated in the `homebrew-tap` repository:
 ```bash
-brew install vietcgi/tap/netwatch
+brew install abcsds/tap/netwatch
 ```
 
 ## Quality Assurance

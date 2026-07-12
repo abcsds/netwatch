@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # Configuration
-REPO="vietcgi/netwatch"
+REPO="abcsds/netwatch"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 BINARY_NAME="netwatch"
 

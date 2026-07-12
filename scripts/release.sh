@@ -388,9 +388,9 @@ main() {
         echo
         info "Next steps:"
         echo "  1. Monitor the GitHub Actions workflow at:"
-        echo "     https://github.com/vietcgi/netwatch/actions"
+        echo "     https://github.com/abcsds/netwatch/actions"
         echo "  2. Review the generated release at:"
-        echo "     https://github.com/vietcgi/netwatch/releases/tag/v$new_version"
+        echo "     https://github.com/abcsds/netwatch/releases/tag/v$new_version"
         echo "  3. Test the installation script and binaries"
         echo "  4. Announce the release in relevant channels"
     else
