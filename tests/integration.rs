@@ -23,18 +23,32 @@ fn test_version_flag() {
 #[test]
 fn test_list_flag() {
     // Interface names are machine-specific, and `list_devices` intentionally
-    // filters out loopback/virtual interfaces. In a loopback-only sandbox
-    // (e.g. a Nix build sandbox with only `lo`) that means zero interfaces
-    // is valid output. Assert only that the command succeeds and, if it
-    // prints anything, each line is a plausible (non-blank) interface name.
+    // filters out loopback/virtual interfaces (names starting with "lo",
+    // "docker", "veth", "br-" — mirroring src/platform/linux.rs). Detect
+    // whether this environment has any interface surviving that filter and
+    // gate the assertion on it:
+    // - real machine: at least one interface must be listed;
+    // - loopback-only sandbox (e.g. Nix build sandbox): output must be empty;
+    // - non-Linux (no /sys/class/net): assert success only.
+    let has_real_interface = std::fs::read_dir("/sys/class/net")
+        .map(|entries| {
+            entries.filter_map(|e| e.ok()).any(|e| {
+                let name = e.file_name().to_string_lossy().to_string();
+                !name.starts_with("lo")
+                    && !name.starts_with("docker")
+                    && !name.starts_with("veth")
+                    && !name.starts_with("br-")
+            })
+        })
+        .unwrap_or(false);
+
     let mut cmd = Command::cargo_bin("netwatch").unwrap();
     let assert = cmd.arg("--list").assert().success();
-    let stdout = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    for line in stdout.lines() {
-        assert!(
-            !line.trim().is_empty(),
-            "interface list should not contain blank lines"
-        );
+
+    if has_real_interface {
+        assert.stdout(predicate::str::is_empty().not());
+    } else if cfg!(target_os = "linux") {
+        assert.stdout(predicate::str::is_empty());
     }
 }
 
