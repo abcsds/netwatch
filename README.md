@@ -268,8 +268,17 @@ netwatch --list
 
 - **Memory safe** - Rust prevents buffer overflows and memory leaks
 - **Privilege separation** - Runs with minimal required permissions
-- **No network transmission** - Only reads local system statistics
+- **Read-only passive monitoring** - Core monitoring only reads local system statistics and transmits nothing (see Privacy below for the one active-probe exception)
 - **Input validation** - All inputs are validated and sanitized
+
+## 🔏 Privacy
+
+netwatch's passive monitoring is read-only (`/proc`, `/sys`, system APIs) and
+transmits nothing. The optional **Diagnostics** panel is the one exception:
+while open, it actively probes configurable targets (defaults: 1.1.1.1,
+8.8.8.8, cloudflare.com, google.com) every 5 seconds using
+`ping`/`traceroute`/`nc`/`nslookup`. Close the panel and no probes run. The
+targets can be changed in the config file (`DiagnosticTargets` / `DNSDomains`).
 
 ## 🤝 Contributing
 
