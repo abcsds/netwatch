@@ -818,8 +818,8 @@ impl ConnectionMonitor {
 
     fn parse_lsof_line(&self, line: &str, protocol: &Protocol) -> Option<NetworkConnection> {
         // Parse macOS lsof format: command pid user fd type device size/off node name
-        // Example: rapportd 699 kevin 8u IPv4 0x666a2de494291f52 0t0 TCP *:64566 (LISTEN)
-        // Example: identitys 721 kevin 36u IPv6 0xe327a3d736b97a9a 0t0 TCP [fe80:18::3af0:34ed:86c8:f8bc]:1024->[fe80:18::190d:c0da:7b3c:37fa]:1024 (ESTABLISHED)
+        // Example: rapportd 699 user 8u IPv4 0x666a2de494291f52 0t0 TCP *:64566 (LISTEN)
+        // Example: identitys 721 user 36u IPv6 0xe327a3d736b97a9a 0t0 TCP [fe80:18::3af0:34ed:86c8:f8bc]:1024->[fe80:18::190d:c0da:7b3c:37fa]:1024 (ESTABLISHED)
         let parts: Vec<&str> = line.split_whitespace().collect();
         if parts.len() < 8 {
             return None;
